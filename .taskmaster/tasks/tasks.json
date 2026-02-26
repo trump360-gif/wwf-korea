@@ -1,0 +1,574 @@
+{
+  "tasks": [
+    {
+      "id": 1,
+      "title": "프로젝트 초기 설정 및 의존성 설치",
+      "description": "Next.js App Router + TypeScript + Tailwind CSS 프로젝트에 필요한 의존성을 설치하고 기본 설정을 완료한다. shadcn/ui 초기화, Zustand, GSAP, @react-pdf/renderer 등 PRD에 명시된 모든 패키지를 설치한다.",
+      "status": "pending",
+      "priority": "high",
+      "dependencies": [],
+      "subtasks": [
+        {
+          "id": 1,
+          "title": "shadcn/ui 초기화 및 필수 컴포넌트 설치 (button, dialog, input, checkbox, radio-group, progress, toggle-group)",
+          "status": "pending"
+        },
+        {
+          "id": 2,
+          "title": "Zustand, GSAP, @react-pdf/renderer, lucide-react 설치",
+          "status": "pending"
+        },
+        {
+          "id": 3,
+          "title": "next.config.ts standalone 빌드 설정 및 이미지 도메인 설정",
+          "status": "pending"
+        },
+        {
+          "id": 4,
+          "title": "tsconfig.json strict 모드 및 경로 alias 확인",
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "디자인 시스템 설정 (컬러, 타이포, 폰트)",
+      "description": "PRD 섹션 6.2~6.3에 정의된 WWF 브랜드 컬러(Primary Black, WWF Orange, Warm Gray 등)와 타이포 스케일을 Tailwind CSS에 설정한다. next/font로 Noto Serif KR, Playfair Display, Pretendard 폰트를 로드한다.",
+      "status": "pending",
+      "priority": "high",
+      "dependencies": [1],
+      "subtasks": [
+        {
+          "id": 1,
+          "title": "Tailwind CSS에 WWF 브랜드 컬러 토큰 설정 (globals.css CSS 변수)",
+          "status": "pending"
+        },
+        {
+          "id": 2,
+          "title": "타이포 스케일 설정 (Hero 56-72px, 섹션 헤딩 36-48px, 본문 18-20px 등)",
+          "status": "pending"
+        },
+        {
+          "id": 3,
+          "title": "next/font로 Noto Serif KR, Playfair Display, Pretendard 로드 및 CSS 변수 등록",
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "타입 정의 및 미션 데이터 파일 생성",
+      "description": "PRD 섹션 3.7에 정의된 Mission, NarrativeSection, NarrativeImage, Stat 인터페이스를 lib/types/에 생성하고, 6개 미션의 전체 데이터를 lib/data/missions.ts에 작성한다.",
+      "status": "pending",
+      "priority": "high",
+      "dependencies": [1],
+      "subtasks": [
+        {
+          "id": 1,
+          "title": "lib/types/mission.ts - Mission, NarrativeSection, NarrativeImage, Stat, MissionSlug 타입 정의",
+          "status": "pending"
+        },
+        {
+          "id": 2,
+          "title": "lib/types/donation.ts - DonationType, DonationState, DonorInfo, ModalStep 타입 정의",
+          "status": "pending"
+        },
+        {
+          "id": 3,
+          "title": "lib/data/missions.ts - 6개 미션 전체 데이터 작성 (내러티브, 통계, 임팩트 메시지 포함)",
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Zustand 스토어 설계 및 구현",
+      "description": "PRD 섹션 9.4에 정의된 donationStore를 구현한다. modal 상태, donation 상태, donor 정보, actions를 포함한다. sessionStorage 1회성 백업 로직도 포함한다.",
+      "status": "pending",
+      "priority": "high",
+      "dependencies": [3],
+      "subtasks": [
+        {
+          "id": 1,
+          "title": "lib/store/donationStore.ts - 모달, 기부, 기부자 상태 및 액션 구현",
+          "status": "pending"
+        },
+        {
+          "id": 2,
+          "title": "감사 페이지용 sessionStorage 1회성 백업 로직 구현",
+          "status": "pending"
+        },
+        {
+          "id": 3,
+          "title": "금액 배분 자동 계산 로직 (균등 배분) 구현",
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "title": "프로젝트 디렉토리 구조 생성",
+      "description": "PRD 섹션 9.2에 정의된 전체 디렉토리 구조를 생성한다. app/, components/, lib/, public/ 하위 폴더를 모두 만든다.",
+      "status": "pending",
+      "priority": "high",
+      "dependencies": [1],
+      "subtasks": [
+        {
+          "id": 1,
+          "title": "app/ 라우트 구조 생성 (missions/[slug], donate/complete, api/certificate)",
+          "status": "pending"
+        },
+        {
+          "id": 2,
+          "title": "components/ 구조 생성 (layout, landing, mission, donate, thankyou, ui)",
+          "status": "pending"
+        },
+        {
+          "id": 3,
+          "title": "lib/ 구조 생성 (store, data, pdf, animations, utils, types)",
+          "status": "pending"
+        },
+        {
+          "id": 4,
+          "title": "public/images/ 구조 생성 (missions, hero) 및 WWF 로고 placeholder",
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "title": "글로벌 레이아웃 컴포넌트 (Navigation, Footer)",
+      "description": "app/layout.tsx에 글로벌 레이아웃을 구현한다. Navigation(WWF 로고 + 기부하기 + 메뉴)과 Footer(WWF-Korea 정보, 링크, SNS)를 구현한다.",
+      "status": "pending",
+      "priority": "high",
+      "dependencies": [2, 5],
+      "subtasks": [
+        {
+          "id": 1,
+          "title": "app/layout.tsx - 폰트 로드, 전역 스타일, 메타데이터, Nav/Footer 배치",
+          "status": "pending"
+        },
+        {
+          "id": 2,
+          "title": "components/layout/Navigation.tsx - WWF 로고, 기부하기 버튼, 반응형 메뉴",
+          "status": "pending"
+        },
+        {
+          "id": 3,
+          "title": "components/layout/Footer.tsx - WWF-Korea 정보, 링크, SNS",
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "title": "메인 랜딩페이지 구현",
+      "description": "PRD 섹션 8.1의 와이어프레임대로 메인 랜딩페이지를 구현한다. 히어로 섹션, 미션 카드 그리드(3x2), 임팩트 넘버 섹션을 포함한다.",
+      "status": "pending",
+      "priority": "high",
+      "dependencies": [3, 6],
+      "subtasks": [
+        {
+          "id": 1,
+          "title": "components/landing/Hero.tsx - 전면 자연 사진 + '지금, 자연이 보내는 신호' 오버레이",
+          "status": "pending"
+        },
+        {
+          "id": 2,
+          "title": "components/landing/MissionCardGrid.tsx + MissionCard.tsx - 6개 카드 3x2 그리드, 호버 시 줌+텍스트",
+          "status": "pending"
+        },
+        {
+          "id": 3,
+          "title": "components/landing/ImpactNumbers.tsx - 100개국, 600만 후원자, 13000+ 프로젝트 카운트업",
+          "status": "pending"
+        },
+        {
+          "id": 4,
+          "title": "app/page.tsx - 메인 랜딩 SSG 페이지 조합",
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "title": "미션별 랜딩페이지 구현",
+      "description": "PRD 섹션 8.2의 와이어프레임대로 미션별 랜딩페이지를 구현한다. 풀스크린 히어로, 3단 스크롤 내러티브(문제-활동-호소), 통계 하이라이트, CTA를 포함한다. generateStaticParams로 6개 미션 정적 생성한다.",
+      "status": "pending",
+      "priority": "high",
+      "dependencies": [3, 6],
+      "subtasks": [
+        {
+          "id": 1,
+          "title": "components/mission/MissionHero.tsx - 풀스크린 사진 + 미션명 + 서브타이틀 오버레이",
+          "status": "pending"
+        },
+        {
+          "id": 2,
+          "title": "components/mission/ScrollNarrative.tsx + NarrativeSection.tsx - 3단 스크롤 내러티브 컨테이너",
+          "status": "pending"
+        },
+        {
+          "id": 3,
+          "title": "components/mission/StatHighlight.tsx - 대형 숫자 + 단위 + 라벨 강조 블록",
+          "status": "pending"
+        },
+        {
+          "id": 4,
+          "title": "components/mission/DonationCTA.tsx - 하단 기부하기 버튼 (내러티브 흐름 끝에 배치)",
+          "status": "pending"
+        },
+        {
+          "id": 5,
+          "title": "app/missions/[slug]/page.tsx - generateStaticParams + SSG 페이지 조합",
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "title": "GSAP ScrollTrigger 애니메이션 구현",
+      "description": "PRD 섹션 6.6, 9.5에 정의된 스크롤 애니메이션을 구현한다. 텍스트 페이드업, 사진 패럴랙스, 카운트업, 카드 staggered 등장을 포함한다. prefers-reduced-motion 대응 필수.",
+      "status": "pending",
+      "priority": "medium",
+      "dependencies": [7, 8],
+      "subtasks": [
+        {
+          "id": 1,
+          "title": "lib/animations/scrollAnimations.ts - ScrollTrigger 유틸리티 함수 정의",
+          "status": "pending"
+        },
+        {
+          "id": 2,
+          "title": "미션 랜딩 내러티브 섹션 애니메이션 (텍스트 페이드업, 사진 패럴랙스/스케일)",
+          "status": "pending"
+        },
+        {
+          "id": 3,
+          "title": "통계 숫자 카운트업 애니메이션 (뷰포트 진입 시 트리거)",
+          "status": "pending"
+        },
+        {
+          "id": 4,
+          "title": "메인 랜딩 카드 staggered 페이드업 (각 0.15s 딜레이)",
+          "status": "pending"
+        },
+        {
+          "id": 5,
+          "title": "prefers-reduced-motion 감지 및 애니메이션 비활성화 처리",
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "title": "기부 모달 컨테이너 및 스텝 관리",
+      "description": "PRD 섹션 4, 8.3에 정의된 기부 스텝 모달을 구현한다. 전역 모달로 동작하며, 4개 스텝(1→2→2-1→3) 전환, 프로그레스 바, 모바일 풀스크린 바텀시트를 포함한다.",
+      "status": "pending",
+      "priority": "high",
+      "dependencies": [4, 6],
+      "subtasks": [
+        {
+          "id": 1,
+          "title": "components/donate/DonateModal.tsx - 모달 컨테이너, 스텝 전환, 프로그레스 바",
+          "status": "pending"
+        },
+        {
+          "id": 2,
+          "title": "모바일 풀스크린 바텀시트 전환 (768px 미만)",
+          "status": "pending"
+        },
+        {
+          "id": 3,
+          "title": "모달 닫기 정책 (스텝2 이후 확인 다이얼로그, 배경 클릭, Esc, 뒤로가기)",
+          "status": "pending"
+        },
+        {
+          "id": 4,
+          "title": "history.pushState 모달 상태 관리 (브라우저 뒤로가기 대응)",
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": 11,
+      "title": "기부 스텝 1 - 미션 확인 + 금액 설정",
+      "description": "PRD 섹션 4.2, 4.6에 따라 미션 확인 메시지, 후원 유형 토글(월정기/일시), 금액 프리셋(1/3/5/10만원) + 직접 입력, 검증 로직을 구현한다.",
+      "status": "pending",
+      "priority": "high",
+      "dependencies": [10],
+      "subtasks": [
+        {
+          "id": 1,
+          "title": "components/donate/StepConfirm.tsx - 미션 확인 메시지 + 금액 설정 UI",
+          "status": "pending"
+        },
+        {
+          "id": 2,
+          "title": "components/donate/DonationTypeToggle.tsx - 월정기/일시 후원 토글",
+          "status": "pending"
+        },
+        {
+          "id": 3,
+          "title": "components/donate/AmountSelector.tsx - 4개 프리셋 + 직접 입력 (모바일 2x2)",
+          "status": "pending"
+        },
+        {
+          "id": 4,
+          "title": "금액 검증 (최소 1000원, 최대 1억/1000만원, 숫자 외 차단)",
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": 12,
+      "title": "기부 스텝 2 & 2-1 - 추가 미션 선택",
+      "description": "PRD 섹션 4.3, 4.4에 따라 추가 미션 참여 여부 화면과 카테고리 선택 화면을 구현한다. 동등한 비중의 예/아니오, 균등 배분 비율 표시를 포함한다.",
+      "status": "pending",
+      "priority": "high",
+      "dependencies": [10],
+      "subtasks": [
+        {
+          "id": 1,
+          "title": "components/donate/StepAdditional.tsx - 감사 메시지 + '네/아니오' 동등 버튼",
+          "status": "pending"
+        },
+        {
+          "id": 2,
+          "title": "components/donate/StepCategorySelect.tsx - 나머지 5개 미션 카드 복수 선택",
+          "status": "pending"
+        },
+        {
+          "id": 3,
+          "title": "균등 배분 비율 시각적 표시 (예: '각 33%씩 배분됩니다')",
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": 13,
+      "title": "기부 스텝 3 - 결제 정보 입력",
+      "description": "PRD 섹션 4.5, 4.6에 따라 기부 요약, 기부자 정보(이름/이메일/연락처), 결제 수단 선택 UI를 구현한다. 필수 필드 검증(인라인 + 폼 제출 시)을 포함한다.",
+      "status": "pending",
+      "priority": "high",
+      "dependencies": [10],
+      "subtasks": [
+        {
+          "id": 1,
+          "title": "components/donate/StepPayment.tsx - 기부 요약 + 기부자 정보 + 결제 수단",
+          "status": "pending"
+        },
+        {
+          "id": 2,
+          "title": "필수 필드 인라인 검증 (이름 2자+, 이메일 형식, 연락처 10-11자리 자동 하이픈)",
+          "status": "pending"
+        },
+        {
+          "id": 3,
+          "title": "후원하기 버튼 활성화 조건 및 제출 처리 → /donate/complete 이동",
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": 14,
+      "title": "감사 페이지 구현",
+      "description": "PRD 섹션 5, 8.4에 따라 감사 메시지, 기부 요약 카드, PDF 다운로드 버튼, 메인 복귀 링크를 구현한다. 기부 완료 상태 없이 직접 접근 시 리다이렉트 처리한다.",
+      "status": "pending",
+      "priority": "high",
+      "dependencies": [4, 6],
+      "subtasks": [
+        {
+          "id": 1,
+          "title": "app/donate/complete/page.tsx - 감사 페이지 CSR, 상태 없으면 / 리다이렉트",
+          "status": "pending"
+        },
+        {
+          "id": 2,
+          "title": "components/thankyou/ThankYouMessage.tsx - '당신의 마음이 [미션명]에 닿았습니다'",
+          "status": "pending"
+        },
+        {
+          "id": 3,
+          "title": "components/thankyou/DonationSummary.tsx - 기부자 이름, 금액, 미션, 날짜 카드",
+          "status": "pending"
+        },
+        {
+          "id": 4,
+          "title": "components/thankyou/CertificateDownload.tsx - PDF 다운로드 버튼 + 로딩 스피너",
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": 15,
+      "title": "기증서 PDF 생성 구현",
+      "description": "PRD 섹션 5.2, 9.6에 따라 @react-pdf/renderer로 A4 세로 기증서를 구현한다. WWF 로고, 기부자 정보, 임팩트 메시지, 고유 번호를 포함한다. Noto Sans KR 폰트 등록 필요.",
+      "status": "pending",
+      "priority": "medium",
+      "dependencies": [3, 14],
+      "subtasks": [
+        {
+          "id": 1,
+          "title": "lib/pdf/CertificateTemplate.tsx - @react-pdf/renderer A4 기증서 레이아웃",
+          "status": "pending"
+        },
+        {
+          "id": 2,
+          "title": "Noto Sans KR 폰트 파일 등록 (한글 PDF 렌더링)",
+          "status": "pending"
+        },
+        {
+          "id": 3,
+          "title": "app/api/certificate/route.ts - 서버사이드 PDF 생성 API Route",
+          "status": "pending"
+        },
+        {
+          "id": 4,
+          "title": "클라이언트 pdf() Blob 생성 → 다운로드 (서버 API 폴백)",
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": 16,
+      "title": "이미지 에셋 수급 및 최적화 설정",
+      "description": "PRD 섹션 6.5에 따라 미션별 이미지(히어로 1 + 카드 1 + 내러티브 3 = 총 31장)를 Unsplash/Pexels에서 수급한다. next/image 설정(priority, blur placeholder, sizes)을 적용한다.",
+      "status": "pending",
+      "priority": "medium",
+      "dependencies": [5],
+      "subtasks": [
+        {
+          "id": 1,
+          "title": "메인 히어로 이미지 1장 (earth nature aerial, 1920x1080)",
+          "status": "pending"
+        },
+        {
+          "id": 2,
+          "title": "6개 미션별 히어로(1920x1080) + 카드(600x800) + 내러티브(3장) 이미지 수급",
+          "status": "pending"
+        },
+        {
+          "id": 3,
+          "title": "next/image 최적화 설정 (priority, placeholder blur, sizes, lazy loading)",
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": 17,
+      "title": "반응형 디자인 (모바일/태블릿 최적화)",
+      "description": "PRD 섹션 6.7, 6.8에 따라 3단계 반응형(Desktop 1200px+, Tablet 768-1199px, Mobile ~767px)을 구현한다. 특히 기부 모달의 모바일 풀스크린 바텀시트, 금액 2x2 그리드, 카테고리 1열 리스트를 포함한다.",
+      "status": "pending",
+      "priority": "medium",
+      "dependencies": [7, 8, 10, 11, 12, 13],
+      "subtasks": [
+        {
+          "id": 1,
+          "title": "메인 랜딩 미션 카드 그리드 반응형 (3열→2열→1열)",
+          "status": "pending"
+        },
+        {
+          "id": 2,
+          "title": "미션 랜딩 내러티브 반응형 (사진-텍스트 교차→세로 스택)",
+          "status": "pending"
+        },
+        {
+          "id": 3,
+          "title": "기부 모달 모바일 최적화 (바텀시트, 2x2 금액, 1열 카테고리, safe-area-inset)",
+          "status": "pending"
+        },
+        {
+          "id": 4,
+          "title": "모바일 키보드 올라올 때 scrollIntoView 처리",
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": 18,
+      "title": "접근성 기본 구현",
+      "description": "PRD 섹션 10에 따라 프로토타입 필수 접근성을 구현한다. 키보드 네비게이션, 모달 포커스 트랩, alt 텍스트, 색 대비, 폼 레이블, 에러 메시지 연결, prefers-reduced-motion 대응을 포함한다.",
+      "status": "pending",
+      "priority": "medium",
+      "dependencies": [7, 8, 10],
+      "subtasks": [
+        {
+          "id": 1,
+          "title": "시맨틱 HTML 확인 (button, a, input, label) 및 키보드 네비게이션 테스트",
+          "status": "pending"
+        },
+        {
+          "id": 2,
+          "title": "모달 포커스 트랩 확인 (shadcn Dialog 기본 동작 활용)",
+          "status": "pending"
+        },
+        {
+          "id": 3,
+          "title": "모든 이미지 alt 텍스트, 폼 label/aria-label, aria-describedby 적용",
+          "status": "pending"
+        },
+        {
+          "id": 4,
+          "title": "WWF Orange CTA 색 대비 검증 (WCAG AA 4.5:1)",
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": 19,
+      "title": "로딩 상태 및 성능 최적화",
+      "description": "PRD 섹션 11에 따라 로딩 UI(프로그레스 바, blur placeholder, 스피너)와 성능 최적화(GSAP 동적 import, PDF 번들 분리, 폰트 최적화)를 구현한다.",
+      "status": "pending",
+      "priority": "medium",
+      "dependencies": [7, 8, 9, 14, 15],
+      "subtasks": [
+        {
+          "id": 1,
+          "title": "app/loading.tsx - 상단 오렌지 프로그레스 바",
+          "status": "pending"
+        },
+        {
+          "id": 2,
+          "title": "히어로 이미지 blur placeholder + priority 적용",
+          "status": "pending"
+        },
+        {
+          "id": 3,
+          "title": "GSAP 포함 컴포넌트 next/dynamic 동적 import",
+          "status": "pending"
+        },
+        {
+          "id": 4,
+          "title": "@react-pdf/renderer 동적 import (번들 분리)",
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": 20,
+      "title": "유틸리티 함수 및 공통 모듈",
+      "description": "lib/utils/에 금액 포맷팅, 전화번호 자동 하이픈, 이메일 검증 등 공통 유틸리티를 구현한다.",
+      "status": "pending",
+      "priority": "medium",
+      "dependencies": [1],
+      "subtasks": [
+        {
+          "id": 1,
+          "title": "lib/utils/formatCurrency.ts - 금액 포맷팅 (1,000원 → '1,000원')",
+          "status": "pending"
+        },
+        {
+          "id": 2,
+          "title": "lib/utils/validation.ts - 이메일, 전화번호, 이름 검증 함수",
+          "status": "pending"
+        },
+        {
+          "id": 3,
+          "title": "lib/utils/cn.ts - clsx + tailwind-merge 래퍼 (shadcn 기본)",
+          "status": "pending"
+        }
+      ]
+    }
+  ]
+}
