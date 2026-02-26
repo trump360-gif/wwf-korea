@@ -270,7 +270,7 @@ export default function Navigation({
                   data-testid="nav-mobile-donate-button"
                   onClick={() => {
                     setMobileMenuOpen(false)
-                    openModal('ocean')
+                    openModal()
                   }}
                   className={cn(
                     'w-full flex items-center justify-center gap-2 px-6 py-3 rounded-full text-sm font-semibold',

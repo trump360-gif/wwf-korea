@@ -1,7 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useCallback } from 'react'
-import { useRouter } from 'next/navigation'
+import { useEffect, useLayoutEffect, useRef, useCallback } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { missions } from '@/lib/data/missions'
@@ -12,12 +11,15 @@ if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger)
 }
 
+// SSR에서 useLayoutEffect 경고 방지
+const useIsomorphicLayoutEffect =
+  typeof window !== 'undefined' ? useLayoutEffect : useEffect
+
 export default function MissionCardGrid() {
   const sectionRef = useRef<HTMLElement>(null)
   const gridRef = useRef<HTMLDivElement>(null)
   const headingRef = useRef<HTMLHeadingElement>(null)
   const ctxRef = useRef<gsap.Context | null>(null)
-  const router = useRouter()
 
   // 모바일 카드 클릭: GSAP pin revert 후 네비게이션 (DOM 충돌 방지)
   const handleMobileCardClick = useCallback(
@@ -27,18 +29,22 @@ export default function MissionCardGrid() {
       e.preventDefault()
       e.stopPropagation()
 
-      // GSAP DOM 조작 원복 후 네비게이션
+      // GSAP pin spacer를 정리한 후 full page navigation으로 이동
+      // client-side navigation(router.push)은 GSAP DOM 수정과 React fiber tree 간
+      // 불일치로 removeChild 에러를 발생시키므로 전체 페이지 로드 사용
       if (ctxRef.current) {
         ctxRef.current.revert()
         ctxRef.current = null
       }
 
-      router.push(href)
+      window.location.href = href
     },
-    [router]
+    []
   )
 
-  useEffect(() => {
+  // useLayoutEffect를 사용하여 cleanup(ctx.revert)이 React DOM 제거 전에 실행되도록 함
+  // GSAP pin이 추가한 wrapper 요소를 React가 removeChild하기 전에 정리
+  useIsomorphicLayoutEffect(() => {
     if (prefersReducedMotion()) {
       if (headingRef.current) gsap.set(headingRef.current, { opacity: 1, y: 0 })
       if (gridRef.current) {

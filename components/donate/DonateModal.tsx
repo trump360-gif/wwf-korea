@@ -603,8 +603,18 @@ export default function DonateModal() {
   const canGoBack =
     currentStep !== 0 && !(currentStep === 1 && entryMission !== null)
 
-  // ── 모달이 닫혀있으면 렌더링하지 않음 ──────────────────────────────────
-  if (!modal.isOpen && !showConfirm) {
+  // ── 모바일 닫기 애니메이션을 위한 지연 언마운트 ──────────────────────────
+  const [isUnmounting, setIsUnmounting] = useState(false)
+  useEffect(() => {
+    if (!modal.isOpen && isMobile) {
+      setIsUnmounting(true)
+      const timer = setTimeout(() => setIsUnmounting(false), 400)
+      return () => clearTimeout(timer)
+    }
+  }, [modal.isOpen, isMobile])
+
+  // 모달이 닫혀있고 애니메이션도 끝났으면 렌더링하지 않음
+  if (!modal.isOpen && !showConfirm && !isUnmounting) {
     return null
   }
 
