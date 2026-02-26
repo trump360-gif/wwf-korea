@@ -102,13 +102,14 @@ export default function MissionCardGrid() {
           })
 
           // 타임라인: 각 카드가 순차적으로 올라옴
+          // 카드당 스크롤 거리를 0.75vh로 설정하고 scrub: 1로 부드럽게
           const tl = gsap.timeline({
             scrollTrigger: {
               trigger: sectionRef.current,
               start: 'top top',
-              end: () => `+=${(cards.length - 1) * window.innerHeight * 0.55}`,
+              end: () => `+=${(cards.length - 1) * window.innerHeight * 0.75}`,
               pin: true,
-              scrub: 0.5,
+              scrub: 1,
               anticipatePin: 1,
             },
           })
@@ -117,8 +118,10 @@ export default function MissionCardGrid() {
             tl.to(card, {
               yPercent: 0,
               duration: 1,
-              ease: 'power1.inOut',
+              ease: 'power2.out',
             })
+            // 카드 간 짧은 pause (카드가 완전히 올라온 후 잠시 유지)
+            tl.to({}, { duration: 0.3 })
           })
         },
       })
