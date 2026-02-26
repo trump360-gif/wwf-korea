@@ -101,23 +101,19 @@ export default function MissionCardGrid() {
             scrollTrigger: {
               trigger: sectionRef.current,
               start: 'top top',
-              end: () => `+=${(cards.length - 1) * window.innerHeight * 0.75}`,
+              end: () => `+=${(cards.length - 1) * window.innerHeight * 0.55}`,
               pin: true,
-              scrub: 1,
+              scrub: 0.5,
               anticipatePin: 1,
             },
           })
 
-          cards.slice(1).forEach((card, i) => {
+          cards.slice(1).forEach((card) => {
             tl.to(card, {
               yPercent: 0,
               duration: 1,
-              ease: 'power2.out',
+              ease: 'power1.inOut',
             })
-            // 마지막 카드를 제외하고 카드 간 짧은 pause
-            if (i < cards.length - 2) {
-              tl.to({}, { duration: 0.3 })
-            }
           })
         },
       })
