@@ -42,9 +42,8 @@ export default function MissionCardGrid() {
     []
   )
 
-  // useLayoutEffect를 사용하여 cleanup(ctx.revert)이 React DOM 제거 전에 실행되도록 함
-  // GSAP pin이 추가한 wrapper 요소를 React가 removeChild하기 전에 정리
-  useIsomorphicLayoutEffect(() => {
+  // GSAP 초기화: useEffect (브라우저 페인트 후 실행 → 레이아웃 측정이 정확함)
+  useEffect(() => {
     if (prefersReducedMotion()) {
       if (headingRef.current) gsap.set(headingRef.current, { opacity: 1, y: 0 })
       if (gridRef.current) {
@@ -114,24 +113,31 @@ export default function MissionCardGrid() {
             },
           })
 
-          cards.slice(1).forEach((card) => {
+          cards.slice(1).forEach((card, i) => {
             tl.to(card, {
               yPercent: 0,
               duration: 1,
               ease: 'power2.out',
             })
-            // 카드 간 짧은 pause (카드가 완전히 올라온 후 잠시 유지)
-            tl.to({}, { duration: 0.3 })
+            // 마지막 카드를 제외하고 카드 간 짧은 pause
+            if (i < cards.length - 2) {
+              tl.to({}, { duration: 0.3 })
+            }
           })
         },
       })
     })
 
     ctxRef.current = ctx
+  }, [])
 
+  // GSAP cleanup: useLayoutEffect (React DOM 제거 전에 pin spacer 정리)
+  useIsomorphicLayoutEffect(() => {
     return () => {
-      ctx.revert()
-      ctxRef.current = null
+      if (ctxRef.current) {
+        ctxRef.current.revert()
+        ctxRef.current = null
+      }
     }
   }, [])
 
