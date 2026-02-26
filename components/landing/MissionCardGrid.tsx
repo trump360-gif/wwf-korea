@@ -9,6 +9,8 @@ import MissionCard from './MissionCard'
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger)
+  // 모바일 주소창 표시/숨김으로 인한 뷰포트 리사이즈 무시
+  ScrollTrigger.config({ ignoreMobileResize: true })
 }
 
 // SSR에서 useLayoutEffect 경고 방지
@@ -94,6 +96,10 @@ export default function MissionCardGrid() {
           )
           if (cards.length < 2) return
 
+          // 실제 모바일 기기에서 터치 스크롤이 제대로 동작하도록 normalizeScroll 활성화
+          // 브라우저 기본 터치 스크롤을 JS로 대체하여 GSAP이 완전히 제어
+          ScrollTrigger.normalizeScroll(true)
+
           // 첫 번째 카드는 보이고, 나머지는 아래에 대기
           gsap.set(cards, { opacity: 1 })
           cards.slice(1).forEach((card) => {
@@ -101,7 +107,6 @@ export default function MissionCardGrid() {
           })
 
           // 타임라인: 각 카드가 순차적으로 올라옴
-          // 카드당 스크롤 거리를 0.75vh로 설정하고 scrub: 1로 부드럽게
           const tl = gsap.timeline({
             scrollTrigger: {
               trigger: sectionRef.current,
