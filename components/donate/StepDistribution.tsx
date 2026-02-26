@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useEffect, useMemo, useRef } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { gsap } from 'gsap'
 import {
   Sun,
@@ -166,21 +166,38 @@ function SliderRow({ slug, percent, amount, onChange }: SliderRowProps) {
   const Icon = mission ? iconMap[mission.icon] : null
   const color = MISSION_COLORS[slug]
   const sliderAmount = Math.round((percent / 100) * amount)
-  const percentRef = useRef<HTMLSpanElement>(null)
-  const amountRef = useRef<HTMLSpanElement>(null)
 
-  // 숫자 카운트업 애니메이션
-  useEffect(() => {
-    if (percentRef.current) {
-      gsap.to(percentRef.current, {
-        textContent: percent,
-        duration: 0.3,
-        ease: 'power1.out',
-        snap: { textContent: 1 },
-        overwrite: 'auto',
-      })
-    }
+  const [isEditing, setIsEditing] = useState(false)
+  const [editValue, setEditValue] = useState('')
+  const inputRef = useRef<HTMLInputElement>(null)
+
+  const handleStartEdit = useCallback(() => {
+    setEditValue(String(percent))
+    setIsEditing(true)
   }, [percent])
+
+  useEffect(() => {
+    if (isEditing && inputRef.current) {
+      inputRef.current.focus()
+      inputRef.current.select()
+    }
+  }, [isEditing])
+
+  const handleCommitEdit = useCallback(() => {
+    setIsEditing(false)
+    const parsed = parseInt(editValue, 10)
+    if (isNaN(parsed)) return
+    const clamped = Math.max(5, Math.min(95, parsed))
+    onChange(slug, clamped)
+  }, [editValue, slug, onChange])
+
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (e.key === 'Enter') handleCommitEdit()
+      if (e.key === 'Escape') setIsEditing(false)
+    },
+    [handleCommitEdit]
+  )
 
   return (
     <div className="space-y-1.5 md:space-y-2">
@@ -199,10 +216,34 @@ function SliderRow({ slug, percent, amount, onChange }: SliderRowProps) {
           </span>
         </div>
         <div className="flex items-baseline gap-1.5">
-          <span className="text-sm font-bold tabular-nums" style={{ color }}>
-            <span ref={percentRef}>{percent}</span>%
-          </span>
-          <span ref={amountRef} className="text-xs text-wwf-light-gray tabular-nums">
+          {isEditing ? (
+            <span className="text-sm font-bold tabular-nums" style={{ color }}>
+              <input
+                ref={inputRef}
+                type="number"
+                min={5}
+                max={95}
+                value={editValue}
+                onChange={(e) => setEditValue(e.target.value)}
+                onBlur={handleCommitEdit}
+                onKeyDown={handleKeyDown}
+                className="w-10 text-right font-bold tabular-nums bg-transparent border-b-2 outline-none appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none [-moz-appearance:textfield]"
+                style={{ borderColor: color, color }}
+              />
+              %
+            </span>
+          ) : (
+            <button
+              type="button"
+              onClick={handleStartEdit}
+              className="text-sm font-bold tabular-nums cursor-text hover:opacity-70 transition-opacity"
+              style={{ color }}
+              aria-label={`${mission?.name} 비율 직접 입력 (현재 ${percent}%)`}
+            >
+              {percent}%
+            </button>
+          )}
+          <span className="text-xs text-wwf-light-gray tabular-nums">
             {formatCurrency(sliderAmount)}
           </span>
         </div>

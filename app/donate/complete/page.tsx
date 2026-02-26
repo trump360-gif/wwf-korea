@@ -34,6 +34,7 @@ export default function DonateCompletePage() {
   const [shouldRedirect, setShouldRedirect] = useState(false)
 
   useEffect(() => {
+    window.scrollTo(0, 0)
     restoreFromSession()
     setIsReady(true)
   }, [restoreFromSession])
@@ -59,7 +60,7 @@ export default function DonateCompletePage() {
   }))
 
   return (
-    <section className="min-h-screen bg-wwf-warm-gray pt-28 md:pt-36 pb-20 px-4">
+    <section className="min-h-dvh bg-wwf-warm-gray pt-28 md:pt-36 pb-20 px-4">
       <div className="mx-auto max-w-lg space-y-10">
         {/* 감사 메시지 */}
         <ThankYouMessage missionNames={missionNames} />
