@@ -179,11 +179,12 @@ export default function StepPayment() {
     }
     saveDonationRecord(record)
 
-    // 페이지 전환 후 모달 닫기 — 동시 DOM 변경으로 인한 removeChild 에러 방지
-    router.push('/donate/complete')
-    requestAnimationFrame(() => {
-      closeModal()
-    })
+    // 모달을 먼저 닫고, DOM 정리 완료 후 페이지 전환
+    // 동시 실행 시 React DOM 충돌(removeChild 에러) 발생하므로 순차 처리
+    closeModal()
+    setTimeout(() => {
+      router.push('/donate/complete')
+    }, 80)
   }, [donor, paymentMethod, completeDonation, closeModal, router])
 
   return (
