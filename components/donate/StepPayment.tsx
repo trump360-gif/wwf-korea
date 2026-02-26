@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useCallback, useMemo } from 'react'
-import { useRouter } from 'next/navigation'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
@@ -35,14 +34,12 @@ interface FieldErrors {
 }
 
 export default function StepPayment() {
-  const router = useRouter()
   const donation = useDonationStore(selectDonation)
   const donor = useDonationStore(selectDonor)
   const selectedMissions = useDonationStore(selectSelectedMissions)
   const distribution = useDonationStore(selectDistribution)
   const setDonorInfo = useDonationStore((s) => s.setDonorInfo)
   const completeDonation = useDonationStore((s) => s.completeDonation)
-  const closeModal = useDonationStore((s) => s.closeModal)
 
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod | ''>('')
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({})
@@ -179,13 +176,11 @@ export default function StepPayment() {
     }
     saveDonationRecord(record)
 
-    // 모달을 먼저 닫고, DOM 정리 완료 후 페이지 전환
-    // 동시 실행 시 React DOM 충돌(removeChild 에러) 발생하므로 순차 처리
-    closeModal()
-    setTimeout(() => {
-      router.push('/donate/complete')
-    }, 80)
-  }, [donor, paymentMethod, completeDonation, closeModal, router])
+    // full page navigation으로 React DOM 충돌 회피
+    // closeModal + client-side navigation 조합에서 removeChild 에러 발생하므로
+    // 모달 상태 초기화 없이 페이지를 완전히 새로 로드
+    window.location.href = '/donate/complete'
+  }, [donor, paymentMethod, completeDonation])
 
   return (
     <div data-testid="step-payment" className="space-y-6">
