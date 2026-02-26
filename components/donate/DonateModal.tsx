@@ -505,21 +505,33 @@ export default function DonateModal() {
   const prevStepAction = useDonationStore((s) => s.prevStep)
 
   const [isMobile, setIsMobile] = useState(false)
+  const isMobileRef = useRef(false)
   const [showConfirm, setShowConfirm] = useState(false)
   const [prevStep, setPrevStep] = useState<ModalStep | null>(null)
 
   // ── 미디어 쿼리: 768px 미만 = 모바일 ─────────────────────────────────────
+  // isMobile은 모달이 닫혀있을 때만 업데이트하여 열린 중 tree 전환 방지
   useEffect(() => {
     const mq = window.matchMedia('(max-width: 767px)')
 
     const handleChange = (e: MediaQueryListEvent | MediaQueryList) => {
-      setIsMobile(e.matches)
+      isMobileRef.current = e.matches
+      if (!modal.isOpen) {
+        setIsMobile(e.matches)
+      }
     }
 
     handleChange(mq)
     mq.addEventListener('change', handleChange)
     return () => mq.removeEventListener('change', handleChange)
-  }, [])
+  }, [modal.isOpen])
+
+  // 모달이 닫힐 때 실제 isMobile 값으로 동기화
+  useEffect(() => {
+    if (!modal.isOpen) {
+      setIsMobile(isMobileRef.current)
+    }
+  }, [modal.isOpen])
 
   // ── currentStep 변경 시 prevStep 추적 ────────────────────────────────────
   const prevStepRef = useRef<ModalStep | null>(null)

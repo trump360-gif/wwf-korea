@@ -91,9 +91,7 @@ export default function HistoryPage() {
       const a = document.createElement('a')
       a.href = url
       a.download = `wwf-certificate-${record.certificateNumber}.pdf`
-      document.body.appendChild(a)
       a.click()
-      document.body.removeChild(a)
       URL.revokeObjectURL(url)
 
       setDownloadStates((prev) => ({ ...prev, [record.id]: 'idle' }))

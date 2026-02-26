@@ -48,9 +48,7 @@ export default function CertificateDownload({
       const a = document.createElement('a')
       a.href = url
       a.download = 'wwf-certificate.pdf'
-      document.body.appendChild(a)
       a.click()
-      document.body.removeChild(a)
       URL.revokeObjectURL(url)
     } catch (err) {
       setError(
