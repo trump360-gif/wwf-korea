@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useLayoutEffect, useRef, useCallback } from 'react'
+import { useEffect, useRef, useCallback } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { missions } from '@/lib/data/missions'
@@ -9,13 +9,7 @@ import MissionCard from './MissionCard'
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger)
-  // 모바일 주소창 표시/숨김으로 인한 뷰포트 리사이즈 무시
-  ScrollTrigger.config({ ignoreMobileResize: true })
 }
-
-// SSR에서 useLayoutEffect 경고 방지
-const useIsomorphicLayoutEffect =
-  typeof window !== 'undefined' ? useLayoutEffect : useEffect
 
 export default function MissionCardGrid() {
   const sectionRef = useRef<HTMLElement>(null)
@@ -96,10 +90,6 @@ export default function MissionCardGrid() {
           )
           if (cards.length < 2) return
 
-          // 실제 모바일 기기에서 터치 스크롤이 제대로 동작하도록 normalizeScroll 활성화
-          // 브라우저 기본 터치 스크롤을 JS로 대체하여 GSAP이 완전히 제어
-          ScrollTrigger.normalizeScroll(true)
-
           // 첫 번째 카드는 보이고, 나머지는 아래에 대기
           gsap.set(cards, { opacity: 1 })
           cards.slice(1).forEach((card) => {
@@ -134,15 +124,10 @@ export default function MissionCardGrid() {
     })
 
     ctxRef.current = ctx
-  }, [])
 
-  // GSAP cleanup: useLayoutEffect (React DOM 제거 전에 pin spacer 정리)
-  useIsomorphicLayoutEffect(() => {
     return () => {
-      if (ctxRef.current) {
-        ctxRef.current.revert()
-        ctxRef.current = null
-      }
+      ctx.revert()
+      ctxRef.current = null
     }
   }, [])
 
