@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useCallback } from 'react'
+import { useEffect, useRef, useCallback, useState } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { missions } from '@/lib/data/missions'
@@ -9,6 +9,68 @@ import MissionCard from './MissionCard'
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger)
+}
+
+// ── 임시 디버그 오버레이 (모바일 전용) ──
+const DEBUG = true // TODO: 확인 후 false로 변경
+
+function DebugOverlay() {
+  const [info, setInfo] = useState('')
+
+  useEffect(() => {
+    if (!DEBUG || window.matchMedia('(min-width: 768px)').matches) return
+
+    const update = () => {
+      const triggers = ScrollTrigger.getAll()
+      const pinTrigger = triggers.find((t) => t.pin)
+      const section = document.getElementById('mission-card-grid')
+      const pinSpacers = document.querySelectorAll('.pin-spacer')
+
+      const lines = [
+        `scroll: ${Math.round(window.scrollY)}`,
+        `vh: ${window.innerHeight}`,
+        `triggers: ${triggers.length}`,
+        `pin-spacer: ${pinSpacers.length}`,
+        `pinActive: ${pinTrigger?.isActive ?? 'N/A'}`,
+        `progress: ${pinTrigger ? (pinTrigger.progress * 100).toFixed(1) + '%' : 'N/A'}`,
+        `secPos: ${section ? getComputedStyle(section).position : '?'}`,
+        `UA: ${navigator.userAgent.slice(0, 40)}`,
+      ]
+      setInfo(lines.join('\n'))
+    }
+
+    update()
+    window.addEventListener('scroll', update, { passive: true })
+    const interval = setInterval(update, 500)
+    return () => {
+      window.removeEventListener('scroll', update)
+      clearInterval(interval)
+    }
+  }, [])
+
+  if (!DEBUG) return null
+
+  return (
+    <div
+      style={{
+        position: 'fixed',
+        bottom: 10,
+        left: 10,
+        right: 10,
+        zIndex: 9999,
+        background: 'rgba(0,0,0,0.85)',
+        color: '#0f0',
+        fontSize: 11,
+        fontFamily: 'monospace',
+        padding: 8,
+        borderRadius: 8,
+        whiteSpace: 'pre',
+        pointerEvents: 'none',
+      }}
+    >
+      {info}
+    </div>
+  )
 }
 
 export default function MissionCardGrid() {
@@ -105,6 +167,7 @@ export default function MissionCardGrid() {
               pin: true,
               scrub: 0.5,
               anticipatePin: 1,
+              markers: DEBUG, // 임시 디버그 마커
             },
           })
 
@@ -128,6 +191,8 @@ export default function MissionCardGrid() {
   }, [])
 
   return (
+    <>
+    <DebugOverlay />
     <section
       ref={sectionRef}
       id="mission-card-grid"
@@ -169,5 +234,6 @@ export default function MissionCardGrid() {
         </div>
       </div>
     </section>
+    </>
   )
 }
