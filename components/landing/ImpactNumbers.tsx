@@ -1,8 +1,8 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState, useCallback } from 'react'
 import { gsap } from 'gsap'
-import { countUpAnimation, prefersReducedMotion } from '@/lib/animations/scrollAnimations'
+import { prefersReducedMotion } from '@/lib/animations/scrollAnimations'
 
 // ────────────────────────────────────────────────────────────────────────────
 // 타입 정의
@@ -82,33 +82,37 @@ interface StatItemProps {
 }
 
 function StatItem({ stat, index }: StatItemProps) {
-  const valueRef = useRef<HTMLElement>(null)
+  const triggerRef = useRef<HTMLDivElement>(null)
+  const [displayValue, setDisplayValue] = useState(stat.value)
+
+  const updateDisplay = useCallback(
+    (counted: number) => setDisplayValue(formatDisplayValue(stat.value, counted)),
+    [stat.value]
+  )
 
   useEffect(() => {
-    const el = valueRef.current
+    const el = triggerRef.current
     if (!el) return
 
+    if (prefersReducedMotion()) {
+      setDisplayValue(stat.value)
+      return
+    }
+
+    const { numeric } = parseStatValue(stat.value)
+    setDisplayValue(formatDisplayValue(stat.value, 0))
+
+    const counter = { value: 0 }
     const ctx = gsap.context(() => {
-      const { numeric } = parseStatValue(stat.value)
-
-      if (prefersReducedMotion()) {
-        el.textContent = stat.value
-        return
-      }
-
-      // 초기값 설정
-      el.textContent = formatDisplayValue(stat.value, 0)
-
-      const counter = { value: 0 }
       gsap.to(counter, {
         value: numeric,
         duration: 2,
         ease: 'power2.out',
         onUpdate() {
-          el.textContent = formatDisplayValue(stat.value, Math.floor(counter.value))
+          updateDisplay(Math.floor(counter.value))
         },
         onComplete() {
-          el.textContent = stat.value
+          setDisplayValue(stat.value)
         },
         scrollTrigger: {
           trigger: el,
@@ -119,21 +123,21 @@ function StatItem({ stat, index }: StatItemProps) {
     })
 
     return () => ctx.revert()
-  }, [stat.value])
+  }, [stat.value, updateDisplay])
 
   return (
     <div
+      ref={triggerRef}
       data-testid={`impact-stat-${index}`}
       className="flex flex-col items-center text-center"
     >
       {/* 숫자 + 단위 */}
       <div className="flex items-baseline gap-1">
         <dt
-          ref={valueRef}
           className="font-display text-5xl font-bold text-wwf-black"
           aria-label={`${stat.value} ${stat.unit}`}
         >
-          {stat.value}
+          {displayValue}
         </dt>
         <span
           className="font-display text-2xl font-semibold text-wwf-dark-gray"

@@ -3,7 +3,7 @@ import { Noto_Serif_KR, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import Navigation from "@/components/layout/Navigation";
 import Footer from "@/components/layout/Footer";
-import DonateModal from "@/components/donate/DonateModal";
+import DonateModalLoader from "@/components/donate/DonateModalLoader";
 
 const notoSerifKR = Noto_Serif_KR({
   weight: ["400", "700"],
@@ -31,15 +31,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ko">
+    <html lang="ko" suppressHydrationWarning>
       <body
         className={`${notoSerifKR.variable} ${playfairDisplay.variable} antialiased`}
         style={{ fontFamily: "Pretendard Variable, sans-serif" }}
+        suppressHydrationWarning
       >
         <Navigation transparent />
         <main className="min-h-screen">{children}</main>
         <Footer />
-        <DonateModal />
+        <DonateModalLoader />
       </body>
     </html>
   );
