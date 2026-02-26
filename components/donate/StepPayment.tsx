@@ -179,8 +179,11 @@ export default function StepPayment() {
     }
     saveDonationRecord(record)
 
-    closeModal()
+    // 페이지 전환 후 모달 닫기 — 동시 DOM 변경으로 인한 removeChild 에러 방지
     router.push('/donate/complete')
+    requestAnimationFrame(() => {
+      closeModal()
+    })
   }, [donor, paymentMethod, completeDonation, closeModal, router])
 
   return (
