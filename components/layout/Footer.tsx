@@ -7,19 +7,19 @@ const footerLinks = {
     links: [
       { label: '정기 후원', href: '/#donate' },
       { label: '일시 후원', href: '/#donate' },
-      { label: '기업 후원', href: '/corporate' },
-      { label: '유산 기부', href: '/legacy' },
-      { label: '후원금 사용 내역', href: '/transparency' },
+      { label: '기업 후원', href: '#' },
+      { label: '유산 기부', href: '#' },
+      { label: '후원금 사용 내역', href: '#' },
     ],
   },
   about: {
     title: 'WWF 소개',
     links: [
-      { label: 'WWF-Korea 소개', href: '/about' },
-      { label: '주요 활동', href: '/campaigns' },
-      { label: '뉴스레터', href: '/newsletter' },
-      { label: '채용 정보', href: '/careers' },
-      { label: '언론 보도', href: '/press' },
+      { label: 'WWF-Korea 소개', href: '#' },
+      { label: '주요 활동', href: '#' },
+      { label: '뉴스레터', href: '#' },
+      { label: '채용 정보', href: '#' },
+      { label: '언론 보도', href: '#' },
     ],
   },
 }
@@ -167,7 +167,7 @@ export default function Footer() {
             aria-label="법적 정보 링크"
           >
             <Link
-              href="/privacy"
+              href="#"
               data-testid="footer-privacy-link"
               className="font-sans text-xs text-white/40 hover:text-white/70 transition-colors duration-150 underline-offset-4 hover:underline"
             >
@@ -175,7 +175,7 @@ export default function Footer() {
             </Link>
             <span className="text-white/20" aria-hidden="true">|</span>
             <Link
-              href="/terms"
+              href="#"
               data-testid="footer-terms-link"
               className="font-sans text-xs text-white/40 hover:text-white/70 transition-colors duration-150 underline-offset-4 hover:underline"
             >
