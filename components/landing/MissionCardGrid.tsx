@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useCallback } from 'react'
+import { useEffect, useRef } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { missions } from '@/lib/data/missions'
@@ -12,33 +12,9 @@ if (typeof window !== 'undefined') {
 }
 
 export default function MissionCardGrid() {
-  const sectionRef = useRef<HTMLElement>(null)
   const gridRef = useRef<HTMLDivElement>(null)
   const headingRef = useRef<HTMLHeadingElement>(null)
-  const ctxRef = useRef<gsap.Context | null>(null)
 
-  // 모바일 카드 클릭: GSAP pin revert 후 네비게이션 (DOM 충돌 방지)
-  const handleMobileCardClick = useCallback(
-    (e: React.MouseEvent, href: string) => {
-      if (window.matchMedia('(min-width: 768px)').matches) return
-
-      e.preventDefault()
-      e.stopPropagation()
-
-      // GSAP pin spacer를 정리한 후 full page navigation으로 이동
-      // client-side navigation(router.push)은 GSAP DOM 수정과 React fiber tree 간
-      // 불일치로 removeChild 에러를 발생시키므로 전체 페이지 로드 사용
-      if (ctxRef.current) {
-        ctxRef.current.revert()
-        ctxRef.current = null
-      }
-
-      window.location.href = href
-    },
-    []
-  )
-
-  // GSAP 초기화: useEffect (브라우저 페인트 후 실행 → 레이아웃 측정이 정확함)
   useEffect(() => {
     if (prefersReducedMotion()) {
       if (headingRef.current) gsap.set(headingRef.current, { opacity: 1, y: 0 })
@@ -46,16 +22,13 @@ export default function MissionCardGrid() {
         gsap.set(gridRef.current.querySelectorAll('[role="listitem"]'), {
           opacity: 1,
           y: 0,
-          yPercent: 0,
         })
       }
       return
     }
 
-    // StrictMode double-mount 대응: rAF로 DOM 안정화 후 초기화
     const rafId = requestAnimationFrame(() => {
       const ctx = gsap.context(() => {
-        // 헤딩 페이드업 (공통)
         if (headingRef.current) {
           gsap.set(headingRef.current, { opacity: 0, y: 30 })
           gsap.to(headingRef.current, {
@@ -71,85 +44,29 @@ export default function MissionCardGrid() {
           })
         }
 
-        ScrollTrigger.matchMedia({
-          // ── 데스크톱: 기존 stagger 페이드업 ──
-          '(min-width: 768px)': function () {
-            if (!gridRef.current) return
-            const cards = Array.from(
-              gridRef.current.querySelectorAll<HTMLElement>('[role="listitem"]')
-            )
-            if (cards.length > 0) {
-              staggerFadeUp(cards, { stagger: 0.15, duration: 0.7 })
-            }
-          },
-
-          // ── 모바일: 카드 스택 + 핀 ──
-          '(max-width: 767px)': function () {
-            if (!gridRef.current || !sectionRef.current) return
-
-            const cards = Array.from(
-              gridRef.current.querySelectorAll<HTMLElement>('[role="listitem"]')
-            )
-            if (cards.length < 2) return
-
-            // 첫 번째 카드는 보이고, 나머지는 아래에 대기
-            gsap.set(cards, { opacity: 1 })
-            cards.slice(1).forEach((card) => {
-              gsap.set(card, { yPercent: 100 })
-            })
-
-            // 타임라인: 각 카드가 순차적으로 올라옴
-            const tl = gsap.timeline({
-              scrollTrigger: {
-                trigger: sectionRef.current,
-                start: 'top top',
-                end: () => `+=${(cards.length - 1) * window.innerHeight * 0.55}`,
-                pin: true,
-                pinType: 'transform',
-                scrub: 0.5,
-                anticipatePin: 1,
-                invalidateOnRefresh: true,
-              },
-            })
-
-            cards.slice(1).forEach((card) => {
-              tl.to(card, {
-                yPercent: 0,
-                duration: 1,
-                ease: 'power1.inOut',
-              })
-            })
-          },
-        })
+        if (!gridRef.current) return
+        const cards = Array.from(
+          gridRef.current.querySelectorAll<HTMLElement>('[role="listitem"]')
+        )
+        if (cards.length > 0) {
+          staggerFadeUp(cards, { stagger: 0.15, duration: 0.7 })
+        }
       })
 
-      ctxRef.current = ctx
+      return () => ctx.revert()
     })
 
-    // 모바일 주소창 show/hide 시 뷰포트 높이 변경 대응
-    const onResize = () => ScrollTrigger.refresh()
-    window.addEventListener('resize', onResize, { passive: true })
-
-    return () => {
-      cancelAnimationFrame(rafId)
-      window.removeEventListener('resize', onResize)
-      if (ctxRef.current) {
-        ctxRef.current.revert()
-        ctxRef.current = null
-      }
-    }
+    return () => cancelAnimationFrame(rafId)
   }, [])
 
   return (
     <section
-      ref={sectionRef}
       id="mission-card-grid"
       data-testid="mission-card-grid"
       className="py-20 md:py-32"
       aria-labelledby="mission-grid-heading"
     >
       <div className="mx-auto max-w-7xl px-6">
-        {/* 섹션 제목 */}
         <h2
           ref={headingRef}
           id="mission-grid-heading"
@@ -159,23 +76,14 @@ export default function MissionCardGrid() {
           당신의 마음이 닿을 수 있는 곳
         </h2>
 
-        {/* 미션 카드: 모바일=스택, 데스크톱=그리드 */}
         <div
           ref={gridRef}
-          className="relative aspect-3/4 max-h-[75vh] overflow-clip rounded-2xl md:aspect-auto md:max-h-none md:overflow-visible md:rounded-none md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-6"
+          className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 md:gap-6"
           role="list"
           aria-label="WWF 보전 미션 목록"
         >
-          {missions.map((mission, index) => (
-            <div
-              key={mission.slug}
-              role="listitem"
-              className="absolute inset-0 md:relative md:inset-auto"
-              style={{ zIndex: index + 1 }}
-              onClickCapture={(e) =>
-                handleMobileCardClick(e, `/missions/${mission.slug}`)
-              }
-            >
+          {missions.map((mission) => (
+            <div key={mission.slug} role="listitem">
               <MissionCard mission={mission} />
             </div>
           ))}
