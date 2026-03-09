@@ -142,6 +142,7 @@
   }
   body {
     @apply bg-background text-foreground;
+    overflow-x: clip;
   }
 
   /* Range slider thumb */

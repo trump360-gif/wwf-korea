@@ -42,11 +42,9 @@ export default function RootLayout({
         style={{ fontFamily: "Pretendard Variable, sans-serif" }}
         suppressHydrationWarning
       >
-        <div className="overflow-x-clip">
-          <Navigation transparent />
-          <main className="min-h-screen">{children}</main>
-          <Footer />
-        </div>
+        <Navigation transparent />
+        <main className="min-h-screen">{children}</main>
+        <Footer />
         <DonateModalLoader />
       </body>
     </html>

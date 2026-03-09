@@ -105,6 +105,7 @@ export default function MissionCardGrid() {
                 start: 'top top',
                 end: () => `+=${(cards.length - 1) * window.innerHeight * 0.55}`,
                 pin: true,
+                pinType: 'transform',
                 scrub: 0.5,
                 anticipatePin: 1,
                 invalidateOnRefresh: true,
