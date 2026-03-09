@@ -52,78 +52,90 @@ export default function MissionCardGrid() {
       return
     }
 
-    const ctx = gsap.context(() => {
-      // 헤딩 페이드업 (공통)
-      if (headingRef.current) {
-        gsap.set(headingRef.current, { opacity: 0, y: 30 })
-        gsap.to(headingRef.current, {
-          opacity: 1,
-          y: 0,
-          duration: 0.8,
-          ease: 'power3.out',
-          scrollTrigger: {
-            trigger: headingRef.current,
-            start: 'top 85%',
-            once: true,
-          },
-        })
-      }
-
-      ScrollTrigger.matchMedia({
-        // ── 데스크톱: 기존 stagger 페이드업 ──
-        '(min-width: 768px)': function () {
-          if (!gridRef.current) return
-          const cards = Array.from(
-            gridRef.current.querySelectorAll<HTMLElement>('[role="listitem"]')
-          )
-          if (cards.length > 0) {
-            staggerFadeUp(cards, { stagger: 0.15, duration: 0.7 })
-          }
-        },
-
-        // ── 모바일: 카드 스택 + 핀 ──
-        '(max-width: 767px)': function () {
-          if (!gridRef.current || !sectionRef.current) return
-
-          const cards = Array.from(
-            gridRef.current.querySelectorAll<HTMLElement>('[role="listitem"]')
-          )
-          if (cards.length < 2) return
-
-          // 첫 번째 카드는 보이고, 나머지는 아래에 대기
-          gsap.set(cards, { opacity: 1 })
-          cards.slice(1).forEach((card) => {
-            gsap.set(card, { yPercent: 100 })
-          })
-
-          // 타임라인: 각 카드가 순차적으로 올라옴
-          const tl = gsap.timeline({
+    // StrictMode double-mount 대응: rAF로 DOM 안정화 후 초기화
+    const rafId = requestAnimationFrame(() => {
+      const ctx = gsap.context(() => {
+        // 헤딩 페이드업 (공통)
+        if (headingRef.current) {
+          gsap.set(headingRef.current, { opacity: 0, y: 30 })
+          gsap.to(headingRef.current, {
+            opacity: 1,
+            y: 0,
+            duration: 0.8,
+            ease: 'power3.out',
             scrollTrigger: {
-              trigger: sectionRef.current,
-              start: 'top top',
-              end: () => `+=${(cards.length - 1) * window.innerHeight * 0.55}`,
-              pin: true,
-              scrub: 0.5,
-              anticipatePin: 1,
+              trigger: headingRef.current,
+              start: 'top 85%',
+              once: true,
             },
           })
+        }
 
-          cards.slice(1).forEach((card) => {
-            tl.to(card, {
-              yPercent: 0,
-              duration: 1,
-              ease: 'power1.inOut',
+        ScrollTrigger.matchMedia({
+          // ── 데스크톱: 기존 stagger 페이드업 ──
+          '(min-width: 768px)': function () {
+            if (!gridRef.current) return
+            const cards = Array.from(
+              gridRef.current.querySelectorAll<HTMLElement>('[role="listitem"]')
+            )
+            if (cards.length > 0) {
+              staggerFadeUp(cards, { stagger: 0.15, duration: 0.7 })
+            }
+          },
+
+          // ── 모바일: 카드 스택 + 핀 ──
+          '(max-width: 767px)': function () {
+            if (!gridRef.current || !sectionRef.current) return
+
+            const cards = Array.from(
+              gridRef.current.querySelectorAll<HTMLElement>('[role="listitem"]')
+            )
+            if (cards.length < 2) return
+
+            // 첫 번째 카드는 보이고, 나머지는 아래에 대기
+            gsap.set(cards, { opacity: 1 })
+            cards.slice(1).forEach((card) => {
+              gsap.set(card, { yPercent: 100 })
             })
-          })
-        },
+
+            // 타임라인: 각 카드가 순차적으로 올라옴
+            const tl = gsap.timeline({
+              scrollTrigger: {
+                trigger: sectionRef.current,
+                start: 'top top',
+                end: () => `+=${(cards.length - 1) * window.innerHeight * 0.55}`,
+                pin: true,
+                scrub: 0.5,
+                anticipatePin: 1,
+                invalidateOnRefresh: true,
+              },
+            })
+
+            cards.slice(1).forEach((card) => {
+              tl.to(card, {
+                yPercent: 0,
+                duration: 1,
+                ease: 'power1.inOut',
+              })
+            })
+          },
+        })
       })
+
+      ctxRef.current = ctx
     })
 
-    ctxRef.current = ctx
+    // 모바일 주소창 show/hide 시 뷰포트 높이 변경 대응
+    const onResize = () => ScrollTrigger.refresh()
+    window.addEventListener('resize', onResize, { passive: true })
 
     return () => {
-      ctx.revert()
-      ctxRef.current = null
+      cancelAnimationFrame(rafId)
+      window.removeEventListener('resize', onResize)
+      if (ctxRef.current) {
+        ctxRef.current.revert()
+        ctxRef.current = null
+      }
     }
   }, [])
 
@@ -149,7 +161,7 @@ export default function MissionCardGrid() {
         {/* 미션 카드: 모바일=스택, 데스크톱=그리드 */}
         <div
           ref={gridRef}
-          className="relative aspect-3/4 max-h-[75vh] overflow-hidden rounded-2xl md:aspect-auto md:max-h-none md:overflow-visible md:rounded-none md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-6"
+          className="relative aspect-3/4 max-h-[75vh] overflow-clip rounded-2xl md:aspect-auto md:max-h-none md:overflow-visible md:rounded-none md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-6"
           role="list"
           aria-label="WWF 보전 미션 목록"
         >
