@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Noto_Serif_KR, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import Navigation from "@/components/layout/Navigation";
@@ -19,6 +19,11 @@ const playfairDisplay = Playfair_Display({
   display: "swap",
 });
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+};
+
 export const metadata: Metadata = {
   title: "WWF-Korea | 세계자연기금 한국본부",
   description:
@@ -37,9 +42,11 @@ export default function RootLayout({
         style={{ fontFamily: "Pretendard Variable, sans-serif" }}
         suppressHydrationWarning
       >
-        <Navigation transparent />
-        <main className="min-h-screen">{children}</main>
-        <Footer />
+        <div className="overflow-x-clip">
+          <Navigation transparent />
+          <main className="min-h-screen">{children}</main>
+          <Footer />
+        </div>
         <DonateModalLoader />
       </body>
     </html>
